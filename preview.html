@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0d1830">
+  <title>Calibra — Control estadístico de calidad</title>
+  <link rel="stylesheet" href="static/styles.css">
+</head>
+<body>
+<div class="app-shell">
+  <aside class="sidebar" id="sidebar">
+    <div class="brand">
+      <span class="brand-logo"><svg viewBox="0 0 30 30" fill="none" aria-hidden="true"><path d="M3 22h6l4-15 5 11 3-6 3 10h3" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+      <div class="brand-text"><strong>calibra<span>.</span></strong><small>QUALITY ANALYTICS</small></div>
+    </div>
+    <div class="side-label">MENÚ PRINCIPAL</div>
+    <nav aria-label="Navegación principal">
+      <a class="nav-link is-active" href="#inicio"><span class="nav-icon">▦</span> Visión general</a>
+      <a class="nav-link" href="#nuevo"><span class="nav-icon">↥</span> Nuevo análisis</a>
+      <a class="nav-link" href="#resultados"><span class="nav-icon">⌁</span> Cartas de control</a>
+      <a class="nav-link" href="#historial"><span class="nav-icon">◷</span> Historial <span class="nav-count" id="historyCount">0</span></a>
+    </nav>
+    <div class="side-bottom">
+      <div class="help-mini"><span class="help-orb">✳</span><strong>Decisiones con datos</strong><p>Identificá variaciones antes de que se conviertan en problemas.</p></div>
+      <div class="sidebar-foot"><span class="online-dot"></span> Sistema listo para analizar <span class="version">v1.0</span></div>
+    </div>
+  </aside>
+  <div class="main-shell">
+    <header class="topbar">
+      <div class="topbar-left"><span class="breadcrumb">Panel principal</span><span class="breadcrumb-sep">/</span><strong>Resumen</strong></div>
+      <div class="top-actions"><span class="live-pill"><i></i> Entorno activo</span><span class="avatar" title="Administrador">QA</span><!--<form method="post" action="{{ url_for('logout') }}"><button type="submit" class="logout">Salir ↗</button></form>--></div>
+    </header>
+    <main class="main-content" id="inicio">
+      <div class="section-heading"><div><div class="overline">CENTRO DE CALIDAD <span class="small-chevron">›</span> DASHBOARD</div><h1>Control de calidad <span class="heading-spark">✦</span></h1><p>Analizá tus mediciones, verificá límites y detectá cambios en el proceso.</p></div><div class="date-label" id="todayDate">—</div></div>
+
+      <section class="hero" aria-label="Presentación">
+        <div class="hero-content"><div class="hero-tag"><span>✳</span> TU LABORATORIO DIGITAL</div><h2>De una hoja de Excel a<br><em>decisiones más inteligentes.</em></h2><p>Subí un archivo, configurá tus rangos y obtené cartas de control listas para interpretar.</p><a href="#nuevo" class="hero-link">Comenzar un análisis <span>↗</span></a></div>
+        <div class="hero-art" aria-hidden="true"><div class="art-grid"></div><svg viewBox="0 0 390 200"><path class="hero-axis" d="M10 50H380M10 100H380M10 150H380"/><path class="hero-guide" d="M10 65H380M10 146H380"/><polyline points="10,132 35,112 60,119 85,93 110,110 136,88 160,99 186,77 210,92 237,57 262,79 289,62 315,94 340,69 370,46" fill="none" stroke="#68ecdd" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/><circle cx="237" cy="57" r="7" fill="#68ecdd" stroke="#172b47" stroke-width="4"/><circle cx="370" cy="46" r="7" fill="#68ecdd" stroke="#172b47" stroke-width="4"/></svg><div class="art-badge">↗ <span>Lectura inteligente</span></div></div>
+      </section>
+
+      <div class="two-col">
+        <section class="panel upload-panel" id="nuevo">
+          <div class="panel-head"><div><span class="eyebrow">PASO 01 / 02</span><h3>Importar mediciones</h3><p>Seleccioná un archivo y prepará tu análisis.</p></div><span class="panel-icon">↥</span></div>
+          <div class="upload-drop" id="dropZone" role="button" tabindex="0" aria-label="Seleccionar o arrastrar un archivo Excel o CSV"><input id="fileInput" type="file" accept=".xlsx,.csv" hidden><div class="upload-icon">⇧</div><strong>Arrastrá tu Excel hasta aquí</strong><span>o <b>explorá tus archivos</b> para seleccionar uno</span><div class="upload-types"><span>.XLSX</span><span>.CSV</span><span>Máx. 12 MB</span></div></div>
+          <div class="selected-file is-hidden" id="fileInfo"><span class="file-icon">▤</span><div><strong id="fileName"></strong><small id="fileSize"></small></div><button type="button" id="clearFile" aria-label="Quitar archivo">×</button></div>
+          <p class="notice is-hidden" id="notice" role="alert"></p>
+          <div class="configuration is-hidden" id="configuration">
+            <div class="config-divider"><span>PASO 02 / 02</span> Configurá los límites</div>
+            <div class="form-grid">
+              <label class="field"><span>Hoja de datos</span><select id="sheetSelect"></select></label>
+              <label class="field"><span>Columna de medición <i>*</i></span><select id="metricSelect" required></select></label>
+              <label class="field"><span>Etiqueta / fecha (opcional)</span><select id="labelSelect"></select></label>
+              <label class="field"><span>Registros detectados</span><div class="field-readonly" id="rowsFound">—</div></label>
+              <label class="field"><span>Límite inferior (mínimo)</span><input id="lslInput" type="number" step="any" placeholder="Ej. 45.0"></label>
+              <label class="field"><span>Límite superior (máximo)</span><input id="uslInput" type="number" step="any" placeholder="Ej. 55.0"></label>
+            </div>
+            <div class="info-inline"><span>ⓘ</span> Los límites especificados son los requisitos de calidad. La aplicación calcula los límites estadísticos por separado.</div>
+            <details class="preview-details"><summary>Vista previa del archivo <span>↗</span></summary><div class="table-scroll"><table id="previewTable"><thead></thead><tbody></tbody></table></div></details>
+            <button class="button-primary" id="runAnalysis" type="button">Generar cartas de control <span>↗</span></button>
+          </div>
+        </section>
+        <aside class="panel guide-panel">
+          <div class="panel-head"><div><span class="eyebrow">CÓMO FUNCIONA</span><h3>Tres pasos, todo claro.</h3><p>Sin fórmulas complicadas ni configuraciones técnicas.</p></div></div>
+          <div class="steps"><div class="step"><span>01</span><div><strong>Cargá tus datos</strong><p>Excel o CSV con encabezados y una columna numérica.</p></div></div><div class="step"><span>02</span><div><strong>Indicá tus rangos</strong><p>Elegí la medición y sus valores aceptables.</p></div></div><div class="step"><span>03</span><div><strong>Revisá los resultados</strong><p>Consultá gráficas, alertas y descargá tu reporte.</p></div></div></div>
+          <div class="method-card"><div class="method-title">⌁ <strong>Método I–MR</strong><span>SPC</span></div><p>Carta de individuales y rango móvil para datos de mediciones secuenciales. Recomendamos al menos 20–25 observaciones.</p></div>
+        </aside>
+      </div>
+
+      <section class="results-section is-hidden" id="resultados">
+        <div class="results-title"><div><div class="eyebrow">RESULTADOS DEL ANÁLISIS</div><h2>Así se comporta tu proceso.</h2><p id="resultSource"></p></div><a class="button-secondary" id="downloadReport" href="#" download>↓ Descargar CSV</a></div>
+        <div class="verdict-banner" id="verdictBanner"><div class="verdict-symbol" id="verdictSymbol">✓</div><div><span class="eyebrow" id="verdictTag">ANÁLISIS COMPLETO</span><h3 id="verdictTitle">Resultados procesados</h3><p id="verdictText"></p></div></div>
+        <div class="stats-grid">
+          <div class="stat-card"><span>Mediciones válidas</span><div class="stat-number" id="kpiTotal">—</div><small>Registros analizados</small><div class="stat-mini">▥</div></div>
+          <div class="stat-card"><span>Dentro de especificación</span><div class="stat-number" id="kpiInside">—</div><small id="kpiPercent">De todos los registros válidos</small><div class="stat-mini text-green">✓</div></div>
+          <div class="stat-card"><span>Fuera de rango</span><div class="stat-number" id="kpiOutside">—</div><small>Incumplen el mínimo o máximo</small><div class="stat-mini text-red">!</div></div>
+          <div class="stat-card"><span>Fuera de control I</span><div class="stat-number" id="kpiSpc">—</div><small>Variaciones por investigar</small><div class="stat-mini text-amber">⌁</div></div>
+        </div>
+        <div class="charts-grid">
+          <div class="panel graph-panel"><div class="graph-head"><div><div class="eyebrow">CARTA PRINCIPAL</div><h3>Carta de individuales (I)</h3><p>Lecturas a lo largo del proceso y sus límites.</p></div><span class="chart-pill">SPC • I</span></div><div class="graph" id="chartIndividuals" role="img" aria-label="Carta de control de individuales"></div><div class="legend"><span><i class="legend-dot purple"></i>Mediciones</span><span><i class="legend-line teal"></i>Promedio</span><span><i class="legend-line orange"></i>Control</span><span><i class="legend-line red"></i>Especificación</span></div></div>
+          <div class="panel graph-panel"><div class="graph-head"><div><div class="eyebrow">VARIACIÓN ENTRE LECTURAS</div><h3>Carta de rango móvil (MR)</h3><p>Detecta saltos importantes de una medición a otra.</p></div><span class="chart-pill">SPC • MR</span></div><div class="graph" id="chartMR" role="img" aria-label="Carta de control de rango móvil"></div><div class="legend"><span><i class="legend-dot purple"></i>Rangos móviles</span><span><i class="legend-line teal"></i>Promedio MR</span><span><i class="legend-line orange"></i>Límite superior</span></div></div>
+        </div>
+        <div class="two-col details-grid"><div class="panel limits-panel"><div class="panel-head compact"><div><span class="eyebrow">REFERENCIAS NUMÉRICAS</span><h3>Resumen de límites</h3></div></div><div class="limits-list" id="limitsList"></div></div><div class="panel alerts-panel"><div class="panel-head compact"><div><span class="eyebrow">OBSERVACIONES</span><h3>Recomendaciones</h3></div></div><div id="warningList" class="warning-list"></div></div></div>
+        <div class="panel records-panel"><div class="records-head"><div><span class="eyebrow">DETALLE DEL PROCESO</span><h3>Registro de mediciones</h3><p>Identificá rápidamente los puntos que necesitan atención.</p></div><label class="field filter-field"><span>Mostrar</span><select id="rowFilter"><option value="issues">Solo incidencias</option><option value="all">Todos</option><option value="spec">Fuera de especificación</option><option value="control">Fuera de control</option></select></label></div><div class="table-scroll"><table class="data-table"><thead><tr><th>#</th><th>Referencia</th><th>Medición</th><th>Especificación</th><th>Control estadístico</th></tr></thead><tbody id="dataRows"></tbody></table></div><div class="table-bottom"><span id="tableCount">—</span><button type="button" class="load-more is-hidden" id="loadMore">Mostrar más registros ↓</button></div></div>
+      </section>
+
+      <section class="history-section" id="historial"><div class="section-subhead"><div><span class="eyebrow">TRAZABILIDAD</span><h2>Historial de análisis</h2><p>Volvé a consultar mediciones y resultados anteriores.</p></div><button type="button" id="refreshHistory" class="button-quiet">↻ Actualizar</button></div><div class="panel history-panel" id="historyContainer"><div class="empty-state"><span>◷</span><strong>Todavía no hay análisis</strong><p>Tu primer resultado aparecerá aquí.</p></div></div></section>
+      <footer class="footer"><span>© <span id="copyrightYear">2026</span> Calibra · Control estadístico de calidad</span><span>Herramienta de apoyo a decisiones — verificá siempre el método y los datos.</span></footer>
+    </main>
+  </div>
+</div>
+<div class="toast is-hidden" id="toast" role="status"></div>
+
+</body>
+</html>
